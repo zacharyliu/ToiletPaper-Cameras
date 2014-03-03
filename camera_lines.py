@@ -24,13 +24,19 @@ height, width, depth = get_image().shape
 
 # Update trackbar variables
 def onTrackbar(var):
-    global trackbarLeft, trackbarRight
+    global trackbarLeft, trackbarRight, threshold1, threshold2
     trackbarLeft = cv2.getTrackbarPos('Left', 'lines')
     trackbarRight = cv2.getTrackbarPos('Right', 'lines')
+    threshold1 = cv2.getTrackbarPos('Threshold 1', 'edges')
+    threshold2 = cv2.getTrackbarPos('Threshold 2', 'edges')
 
 cv2.namedWindow('lines')
 cv2.createTrackbar('Left', 'lines', 0, 1000, onTrackbar)
 cv2.createTrackbar('Right', 'lines', 0, 1000, onTrackbar)
+
+cv2.namedWindow('edges')
+cv2.createTrackbar('Threshold 1', 'edges', 20, 300, onTrackbar)
+cv2.createTrackbar('Threshold 2', 'edges', 70, 300, onTrackbar)
 
 while True:
     img = get_image()
@@ -39,9 +45,11 @@ while True:
     blur = cv2.GaussianBlur(img, (0, 0), 5)
     cv2.imshow('blur filter', blur)
     img = cv2.addWeighted(img, 3, blur, -2, 0)
+    # img = cv2.GaussianBlur(img, (0, 0), sigmaX=1, sigmaY=3)
     cv2.imshow('sharpened', img)
 
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    # gray = cv2.equalizeHist(gray)
     cv2.imshow('gray', gray)
 
     edges = cv2.Canny(gray, threshold1, threshold2)
@@ -56,7 +64,7 @@ while True:
         for rho, theta in lines[0]:
             # since code is only detecting vertical lines, theta is always 0
             # so rho is the x position of the detected vertical line
-            if trackbarLeft < rho < trackbarRight:
+            if theta == 0 and trackbarLeft < rho < trackbarRight:
                 detect = True
 
             a = np.cos(theta)

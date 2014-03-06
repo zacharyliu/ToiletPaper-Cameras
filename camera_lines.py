@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-camera_port = 2
+camera_port = 1
 threshold1 = 20
 threshold2 = 70
 

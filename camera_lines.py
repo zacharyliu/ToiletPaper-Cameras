@@ -22,15 +22,15 @@ class CameraLines:
         # Capture one image to get dimensions
         self.height, self.width, self.depth = self.get_image().shape
 
-        # Windows and trackbars
-        cv2.namedWindow('lines')
-        cv2.createTrackbar('Left', 'lines', self.trackbarLeft, 1000, self.onTrackbar)
-        cv2.createTrackbar('Right', 'lines', self.trackbarRight, 1000, self.onTrackbar)
-        cv2.createTrackbar('Hough', 'lines', self.houghThreshold, 100, self.onTrackbar)
-
-        cv2.namedWindow('edges')
-        cv2.createTrackbar('Threshold 1', 'edges', self.threshold1, 300, self.onTrackbar)
-        cv2.createTrackbar('Threshold 2', 'edges', self.threshold2, 300, self.onTrackbar)
+        # # Windows and trackbars
+        # cv2.namedWindow('lines')
+        # cv2.createTrackbar('Left', 'lines', self.trackbarLeft, 1000, self.onTrackbar)
+        # cv2.createTrackbar('Right', 'lines', self.trackbarRight, 1000, self.onTrackbar)
+        # cv2.createTrackbar('Hough', 'lines', self.houghThreshold, 100, self.onTrackbar)
+        #
+        # cv2.namedWindow('edges')
+        # cv2.createTrackbar('Threshold 1', 'edges', self.threshold1, 300, self.onTrackbar)
+        # cv2.createTrackbar('Threshold 2', 'edges', self.threshold2, 300, self.onTrackbar)
 
         self._subscribers = set()
 
@@ -107,6 +107,7 @@ class CameraLines:
         cv2.line(img2, (self.trackbarRight, 0), (self.trackbarRight, self.height), (0, 255, 0), 2)
 
         if detect:
+            print 'Detect'
             self._publish('detect')
             cv2.putText(img2, "Detect", (10, self.height-10), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
         else:
@@ -122,7 +123,7 @@ def loop():
         cameraLines.loop()
 
 if __name__ == '__main__':
-    cameraLines = CameraLines(0)
+    cameraLines = CameraLines(2)
     s = zerorpc.Server(cameraLines)
     s.bind("tcp://0.0.0.0:4243")
     thread = Thread(target=loop)

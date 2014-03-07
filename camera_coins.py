@@ -8,6 +8,7 @@ class CameraCoins:
     def __init__(self, port):
         self.camera_port = port
         self.camera = cv2.VideoCapture(self.camera_port)
+        self.camera.set(cv2.cv.CV_CAP_PROP_FPS, 10)
         self.height, self.width, self.depth = self.get_image().shape
         self._subscribers = set()
 

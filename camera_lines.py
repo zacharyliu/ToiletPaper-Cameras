@@ -1,5 +1,8 @@
 import cv2
 import numpy as np
+import zerorpc
+import gevent.queue
+from threading import Thread
 
 class CameraLines:
     def __init__(self, camera_port):
@@ -29,6 +32,8 @@ class CameraLines:
         cv2.createTrackbar('Threshold 1', 'edges', self.threshold1, 300, self.onTrackbar)
         cv2.createTrackbar('Threshold 2', 'edges', self.threshold2, 300, self.onTrackbar)
 
+        self._subscribers = set()
+
     # Captures a single image from the camera and returns it in PIL format
     def get_image(self):
         # read is the easiest way to get a full image out of a VideoCapture object.
@@ -42,6 +47,21 @@ class CameraLines:
         self.threshold1 = cv2.getTrackbarPos('Threshold 1', 'edges')
         self.threshold2 = cv2.getTrackbarPos('Threshold 2', 'edges')
         self.houghThreshold = cv2.getTrackbarPos('Hough', 'lines')
+
+    @zerorpc.stream
+    def subscribe(self):
+        print "Subscriber"
+        try:
+            queue = gevent.queue.Queue()
+            self._subscribers.add(queue)
+            for msg in queue:
+                yield msg
+        finally:
+            self._subscribers.remove(queue)
+
+    def _publish(self, msg):
+        for queue in self._subscribers:
+            queue.put(msg)
 
     def loop(self):
         img = self.get_image()
@@ -96,6 +116,14 @@ class CameraLines:
         if cv2.waitKey(10) == 27:
             exit()
 
-cameraLines = CameraLines(0)
-while True:
-    cameraLines.loop()
+def loop():
+    while True:
+        cameraLines.loop()
+
+if __name__ == '__main__':
+    cameraLines = CameraLines(0)
+    s = zerorpc.Server(cameraLines)
+    s.bind("tcp://0.0.0.0:4243")
+    thread = Thread(target=loop)
+    thread.start()
+    s.run()

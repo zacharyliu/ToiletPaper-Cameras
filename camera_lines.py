@@ -1,10 +1,10 @@
 import cv2
 import numpy as np
 
-camera_port = 1
-threshold1 = 20
-threshold2 = 70
-houghThreshold = 50
+camera_port = 2
+threshold1 = 15
+threshold2 = 28
+houghThreshold = 40
 
 camera = cv2.VideoCapture(camera_port)
 camera.set(cv2.cv.CV_CAP_PROP_FPS, 10)
@@ -12,7 +12,7 @@ camera.set(cv2.cv.CV_CAP_PROP_FPS, 10)
 # global detection status
 detect = False
 
-trackbarLeft, trackbarRight = 0, 0
+trackbarLeft, trackbarRight = 328, 482
 
 # Captures a single image from the camera and returns it in PIL format
 def get_image():

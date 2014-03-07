@@ -1,36 +1,41 @@
 import cv2
 import numpy as np
+import zerorpc
 
-camera_port = 1
+class CameraCoins:
+    def __init__(self, port):
+        self.camera_port = port
+        self.camera = cv2.VideoCapture(self.camera_port)
+        self.height, self.width, self.depth = self.get_image().shape
 
-camera = cv2.VideoCapture(camera_port)
+    def get_image(self):
+        # read is the easiest way to get a full image out of a VideoCapture object.
+        retval, im = self.camera.read()
+        return im
 
-# Captures a single image from the camera and returns it in PIL format
-def get_image():
-    # read is the easiest way to get a full image out of a VideoCapture object.
-    retval, im = camera.read()
-    return im
+    def loop(self):
+        img = self.get_image()
+        # img = cv2.resize(img, (width/2, height/2))
 
-height, width, depth = get_image().shape
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        # cv2.imshow('gray', gray)
 
-while True:
-    img = get_image()
-    # img = cv2.resize(img, (width/2, height/2))
+        smooth = cv2.GaussianBlur(gray, (0, 0), 5)
+        # smooth = cv2.Canny(gray, 5, 40)
+        # cv2.imshow('smooth', smooth)
 
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    cv2.imshow('gray', gray)
+        circles = cv2.HoughCircles(smooth, cv2.cv.CV_HOUGH_GRADIENT, 2, self.height/4, 100, 30, minRadius=10, maxRadius=self.height/2)
 
-    smooth = cv2.GaussianBlur(gray, (0, 0), 2)
-    # smooth = cv2.Canny(gray, 5, 40)
-    cv2.imshow('smooth', smooth)
+        if circles is not None:
+            # print len(circles[0])
 
-    circles = cv2.HoughCircles(smooth, cv2.cv.CV_HOUGH_GRADIENT, 2, height/4, 100, 50)
+            for circle in circles[0]:
+                cv2.circle(img, (circle[0], circle[1]), circle[2], (0, 0, 255), 3)
 
-    if circles is not None:
-        print len(circles[0])
+        cv2.imshow('image', img)
+        cv2.waitKey(10)
 
-        for circle in circles[0]:
-            cv2.circle(img, (circle[0], circle[1]), circle[2], (0, 0, 255), 3)
-
-    cv2.imshow('image', img)
-    cv2.waitKey(10)
+if __name__ == '__main__':
+    cameraCoins = CameraCoins(0)
+    while True:
+        cameraCoins.loop()

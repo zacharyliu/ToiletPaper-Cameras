@@ -59,11 +59,11 @@ class CameraCoins:
         radius = circle[2]
         k = radius/self.height
         if k < 0.32:
-            return 'dime'
+            return 10  # dime
         elif k < 0.38:
-            return 'nickel'
+            return 5  # nickel
         elif k < 0.8:
-            return 'quarter'
+            return 25  # quarter
 
 def loop():
     while True:

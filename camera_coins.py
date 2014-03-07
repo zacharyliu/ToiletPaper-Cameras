@@ -42,10 +42,12 @@ class CameraCoins:
         # smooth = cv2.Canny(gray, 5, 40)
         # cv2.imshow('smooth', smooth)
 
-        circles = cv2.HoughCircles(smooth, cv2.cv.CV_HOUGH_GRADIENT, 2, self.height/4, 100, 30, minRadius=10, maxRadius=self.height/2)
+        circles = cv2.HoughCircles(smooth, cv2.cv.CV_HOUGH_GRADIENT, 2, self.height/4, 100, 30, minRadius=self.height/4, maxRadius=self.height/2)
 
         if circles is not None:
-            self._publish(len(circles[0]))
+            coin = self.identify(circles[0][0])
+            print coin
+            self._publish(coin)
 
             for circle in circles[0]:
                 cv2.circle(img, (circle[0], circle[1]), circle[2], (0, 0, 255), 3)
@@ -53,12 +55,22 @@ class CameraCoins:
         cv2.imshow('image', img)
         cv2.waitKey(10)
 
+    def identify(self, circle):
+        radius = circle[2]
+        k = radius/self.height
+        if k < 0.32:
+            return 'dime'
+        elif k < 0.38:
+            return 'nickel'
+        elif k < 0.8:
+            return 'quarter'
+
 def loop():
     while True:
         cameraCoins.loop()
 
 if __name__ == '__main__':
-    cameraCoins = CameraCoins(0)
+    cameraCoins = CameraCoins(1)
     s = zerorpc.Server(cameraCoins)
     s.bind("tcp://0.0.0.0:4242")
     thread = Thread(target=loop)

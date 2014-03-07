@@ -107,6 +107,7 @@ class CameraLines:
         cv2.line(img2, (self.trackbarRight, 0), (self.trackbarRight, self.height), (0, 255, 0), 2)
 
         if detect:
+            self._publish('detect')
             cv2.putText(img2, "Detect", (10, self.height-10), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
         else:
             cv2.putText(img2, "No Detect", (10, self.height-10), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)

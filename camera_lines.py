@@ -4,6 +4,7 @@ import numpy as np
 camera_port = 1
 threshold1 = 20
 threshold2 = 70
+houghThreshold = 50
 
 camera = cv2.VideoCapture(camera_port)
 camera.set(cv2.cv.CV_CAP_PROP_FPS, 10)
@@ -24,15 +25,17 @@ height, width, depth = get_image().shape
 
 # Update trackbar variables
 def onTrackbar(var):
-    global trackbarLeft, trackbarRight, threshold1, threshold2
+    global trackbarLeft, trackbarRight, threshold1, threshold2, houghThreshold
     trackbarLeft = cv2.getTrackbarPos('Left', 'lines')
     trackbarRight = cv2.getTrackbarPos('Right', 'lines')
     threshold1 = cv2.getTrackbarPos('Threshold 1', 'edges')
     threshold2 = cv2.getTrackbarPos('Threshold 2', 'edges')
+    houghThreshold = cv2.getTrackbarPos('Hough', 'lines')
 
 cv2.namedWindow('lines')
 cv2.createTrackbar('Left', 'lines', 0, 1000, onTrackbar)
 cv2.createTrackbar('Right', 'lines', 0, 1000, onTrackbar)
+cv2.createTrackbar('Hough', 'lines', houghThreshold, 100, onTrackbar)
 
 cv2.namedWindow('edges')
 cv2.createTrackbar('Threshold 1', 'edges', 20, 300, onTrackbar)
@@ -42,9 +45,9 @@ while True:
     img = get_image()
     cv2.imshow('raw camera', img)
 
-    blur = cv2.GaussianBlur(img, (0, 0), 5)
-    cv2.imshow('blur filter', blur)
-    img = cv2.addWeighted(img, 3, blur, -2, 0)
+    # blur = cv2.GaussianBlur(img, (0, 0), 5)
+    # cv2.imshow('blur filter', blur)
+    # img = cv2.addWeighted(img, 3, blur, -2, 0)
     # img = cv2.GaussianBlur(img, (0, 0), sigmaX=1, sigmaY=3)
     cv2.imshow('sharpened', img)
 
@@ -55,7 +58,7 @@ while True:
     edges = cv2.Canny(gray, threshold1, threshold2)
     cv2.imshow('edges', edges)
 
-    lines = cv2.HoughLines(edges, 1, np.pi, 50)
+    lines = cv2.HoughLines(edges, 1, np.pi, houghThreshold)
 
     img2 = img.copy()
 

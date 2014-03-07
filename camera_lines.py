@@ -65,20 +65,20 @@ class CameraLines:
 
     def loop(self):
         img = self.get_image()
-        cv2.imshow('raw camera', img)
+        # cv2.imshow('raw camera', img)
 
         # blur = cv2.GaussianBlur(img, (0, 0), 5)
         # cv2.imshow('blur filter', blur)
         # img = cv2.addWeighted(img, 3, blur, -2, 0)
         # img = cv2.GaussianBlur(img, (0, 0), sigmaX=1, sigmaY=3)
-        cv2.imshow('sharpened', img)
+        # cv2.imshow('sharpened', img)
 
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         # gray = cv2.equalizeHist(gray)
-        cv2.imshow('gray', gray)
+        # cv2.imshow('gray', gray)
 
         edges = cv2.Canny(gray, self.threshold1, self.threshold2)
-        cv2.imshow('edges', edges)
+        # cv2.imshow('edges', edges)
 
         lines = cv2.HoughLines(edges, 1, np.pi, self.houghThreshold)
 

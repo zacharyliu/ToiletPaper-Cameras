@@ -122,10 +122,14 @@ def loop():
     while True:
         cameraLines.loop()
 
-if __name__ == '__main__':
+def start():
+    global cameraLines
     cameraLines = CameraLines(2)
     s = zerorpc.Server(cameraLines)
     s.bind("tcp://0.0.0.0:4243")
     thread = Thread(target=loop)
     thread.start()
     s.run()
+
+if __name__ == '__main__':
+    start()

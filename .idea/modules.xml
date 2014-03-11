@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/ToiletPaper-DetectTest.iml" filepath="$PROJECT_DIR$/ToiletPaper-DetectTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ToiletPaper-Cameras.iml" filepath="$PROJECT_DIR$/ToiletPaper-Cameras.iml" />
     </modules>
   </component>
 </project>

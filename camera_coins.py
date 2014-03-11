@@ -70,10 +70,14 @@ def loop():
     while True:
         cameraCoins.loop()
 
-if __name__ == '__main__':
+def start():
+    global cameraCoins
     cameraCoins = CameraCoins(1)
     s = zerorpc.Server(cameraCoins)
     s.bind("tcp://0.0.0.0:4242")
     thread = Thread(target=loop)
     thread.start()
     s.run()
+
+if __name__ == '__main__':
+    start()

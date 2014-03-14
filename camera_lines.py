@@ -126,7 +126,7 @@ def start():
     global cameraLines
     cameraLines = CameraLines(2)
     s = zerorpc.Server(cameraLines)
-    s.bind("tcp://0.0.0.0:4243")
+    s.bind("tcp://127.0.0.1:4243")
     thread = Thread(target=loop)
     thread.start()
     s.run()

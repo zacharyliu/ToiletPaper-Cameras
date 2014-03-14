@@ -74,7 +74,7 @@ def start():
     global cameraCoins
     cameraCoins = CameraCoins(1)
     s = zerorpc.Server(cameraCoins)
-    s.bind("tcp://0.0.0.0:4242")
+    s.bind("tcp://127.0.0.1:4242")
     thread = Thread(target=loop)
     thread.start()
     s.run()
